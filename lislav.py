@@ -47,7 +47,7 @@ def eval(x: Exp, env=global_env) -> Exp:
     "Evaluate an expression in an environment."
     if isinstance(x, Symbol): # variable reference
         return env[x]
-    elif not isinstance(x, Number): # constant number
+    elif not isinstance(x, List): # constant number
         return x
     elif x[0] == 'if': # conditional
         (_, test, conseq, alt) = x
@@ -70,7 +70,6 @@ def parse(program: str) -> Exp:
     return read_from_tokens(tokenize(program))
 
 def read_from_tokens(tokens: list) -> Exp:
-    print(tokens)
     "Read an expression from a sequence of tokens"
     if len(tokens) == 0:
         raise SyntaxError('unexpected EOF')
@@ -79,7 +78,7 @@ def read_from_tokens(tokens: list) -> Exp:
         L = []
         while tokens[0] != ')':
             L.append(read_from_tokens(tokens))
-        tokens.pop(0) # pop of ')'
+        tokens.pop(0) # pop off ')'
         return L
     elif token == ')':
         raise SyntaxError('unexpected )')
@@ -96,6 +95,3 @@ def atom(token: str) -> Atom:
 
 program = "(begin (define r 10) (* pi (* r r)))"
 print(eval(parse(program)))
-
-test = eval(parse("(begin (define r 10) (* pi (* r r)))"))
-print(test)
